@@ -21,7 +21,7 @@ By default in the ~/Downloads there will be several files named TestApp1.0.0.arm
 and dSYM archive in the ~/Downloads/1.0.0 folder. The VERSION is taken from the app plist info file,
 the bundle version. 
 
-The ipa file is also in the ~/Downloads directory signed with the current provisioning profile
+The ipa file is also in the ~/Downloads/1.0.0 directory signed with the current provisioning profile
 specified in the project settings. 
 
 Basically this command creates an archive the similar way as Xcode Archive command from the menu.
