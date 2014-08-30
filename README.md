@@ -64,6 +64,8 @@ To symbolicate a crash report which is in a local file:
 
 	make show-crash APP=TestApp FILE=TestApp-crash-report-file
 
+This command requires node.js to be installed and `node` available in the current path.
+
 Authors
 
 	Vlad Seryakov
