@@ -28,7 +28,7 @@ Here is the simple example how to send crash reports from the app:
 
 	- (void)initCrashReporter
 	{
-    	    PLCrashReporter *crashReporter = [PLCrashReporter sharedReporter];
+        PLCrashReporter *crashReporter = [PLCrashReporter sharedReporter];
 	    NSError *error = nil;
 	    if ([crashReporter hasPendingCrashReport]) {
 	        NSData *data = [crashReporter loadPendingCrashReportDataAndReturnError: &error];
@@ -36,18 +36,18 @@ Here is the simple example how to send crash reports from the app:
                     PLCrashReport *report = [[PLCrashReport alloc] initWithData:data error:&error];
                     if (report) {
                         NSString *str = [PLCrashReportTextFormatter stringValueForCrashReport:report withTextFormat:PLCrashReportTextFormatiOS];
-    	   	        NSMutableURLRequest *request = [[NSMutableURLRequest alloc] initWithURL:url];
-    			[request setHTTPMethod:@"POST"];
-			[request setHTTPBody:str];
-			.....
+    	   	            NSMutableURLRequest *request = [[NSMutableURLRequest alloc] initWithURL:url];
+                        [request setHTTPMethod:@"POST"];
+                        [request setHTTPBody:str];
+			             .....
             	    }
-		}
+		        }
                 [crashReporter purgePendingCrashReport];
     	    }
             if (![crashReporter enableCrashReporterAndReturnError: &error]) {
                 NSLog(@"Warning: Could not enable crash reporter: %@", error);
             }
-        }
+    }
 	- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 	{
     	    [self initCrashReporter];
