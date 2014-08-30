@@ -13,15 +13,18 @@ it will compile and build the archive using current XCode settings for Release t
 then split dSYM into several architecture specifif binaries. atosl cannot work with universal
 archives so every platform must be in separate file.
 
-After running this in the TestApp project:
+Assuming there is a iOS project called TestApp. To prepare it for symbolication for the current version just run the following command in the project directory:
 
 	make -f ../atosl/Makefile build-app build-crash APP=TestApp
 
-in the ~/Downloads there will be several files named TestApp1.0.0.armv7 ...arvv7s
-and dSYM archive in the ~/Downloads/1.0.0 folder. The VERSION is taken fro the app plist info file,
-the bundle version.
+By default in the ~/Downloads there will be several files named TestApp1.0.0.armv7 ...arvv7s
+and dSYM archive in the ~/Downloads/1.0.0 folder. The VERSION is taken from the app plist info file,
+the bundle version. 
+The ipa file is also in the ~/Downloads directory signed with the current provisioning profile
+specified in the project settings. 
+Basically this command creates an archive the similar way as Xcode Archive command from the menu.
 
-How the crash reports are delivered is out of scope of this simple ssystem, it can be downloaded from the phone, it can
+How the crash reports are delivered is out of scope of this simple system, it can be downloaded from the phone, it can
 be posted from the app using https://www.plcrashreporter.org/. 
 
 Here is the simple example how to send crash reports from the app:
