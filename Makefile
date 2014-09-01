@@ -26,7 +26,7 @@ build-sim:
 build-crash:
 	mkdir -p $(DEST_DIR)
 	cp -r "$(BUILD_DIR).dSYM" $(DEST_DIR)
-	for a in $(ARCHS); do lipo -thin $$a $(BUILD_DIR).dSYM/Contents/Resources/DWARF/$(APP) -output $(DEST_DIR)/$(APP).$$a; done
+	for a in $(ARCHS); do lipo -thin $$a $(BUILD_DIR).dSYM/Contents/Resources/DWARF/$(APP) -output $(DEST_DIR)/$(APP)$(VERSION).$$a; done
 
 show-crash:
 	$(ATOSL_DIR)atosl.js -bin $(ATOSL_DIR)atosl.$(shell uname -s) -app $(DEST_DIR)/$(APP) $(FILE)

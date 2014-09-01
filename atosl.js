@@ -13,14 +13,23 @@ var app = "app";
 var arch = "armv7";
 var version = null;
 
-for (var i = 1; i < process.argv.length - 1; i++) {
-    if (process.argv[i] == "-bin") bin = process.argv[i + 1]; 
-    if (process.argv[i] == "-app") app = process.argv[i + 1]; 
-    if (process.argv[i] == "-ver") version = process.argv[i + 1]; 
+var argv = [];
+for (var i in process.argv) argv.push(process.argv[i]);
+try {
+   String(fs.readFileSync(process.env.HOME + "/.atoslrc")).split("\n").forEach(function(x) {
+      x = x.split("=");
+      if (x.length == 2) argv.push("-" + x[0], x[1]);
+   });
+} catch(e) {}
+
+for (var i = 1; i < argv.length - 1; i++) {
+    if (argv[i] == "-bin") bin = argv[i + 1]; 
+    if (argv[i] == "-app") app = argv[i + 1]; 
+    if (argv[i] == "-ver") version = argv[i + 1]; 
 }
 
 fs.readFile(file, function(err, data) {
-    if (err) return console.log(err);
+    if (err) return console.log("ERROR:", err);
     
     data = String(data).split("\n");
 
@@ -45,11 +54,12 @@ fs.readFile(file, function(err, data) {
 
 	if (line[4] == "armv7s") arch = "armv7s";
 	if (line[0] == "Version:" && version == null) version = line[1];
+        if (line[0] == "***") console.log(data[i]);
     }
     
-    var dsym = app + (version || "") + "." + arch;
-    fs.exists(dsym, function(err, yes) {
-	if (err || !yes) return console.log(err || "cannot find " + dsym);
+    var dsym = app + (version ? version : "") + "." + arch;
+    fs.exists(dsym, function(yes) {
+	if (!yes) return console.log("cannot find " + dsym);
 
     	function build(list) {
 	    var addr = "", cmd = "";
