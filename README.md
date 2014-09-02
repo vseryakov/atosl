@@ -13,9 +13,23 @@ compile and build the iOS app archive using current XCode settings for Release t
 then split dSYM into several architecture specific binaries. atosl cannot work with universal
 archives so every platform must be in separate file.
 
-Assuming there is a iOS project called TestApp. To prepare it for symbolication for the current version just run the following command in the project directory:
+Assuming there is a iOS project called TestApp. 
 
-	make -f ../atosl/Makefile build-app build-crash APP=TestApp
+To prepare it for symbolication for the current version create a file Makefile in the project directory:
+
+	APP=TestApp
+	HOST=api
+
+	all: build-app build-crash copy
+
+	copy:
+	        scp $(DEST_DIR)/*.armv* api:bin
+
+	include ../atosl/Makefile
+
+Now to build the release build and copy symbols it to the Linux api server just run the command:
+
+	make 
 
 By default in the ~/Downloads there will be several files named TestApp1.0.0.armv7 ...arvv7s
 and dSYM archive in the ~/Downloads/1.0.0 folder. The VERSION is taken from the app plist info file,
@@ -65,6 +79,29 @@ To symbolicate a crash report which is in a local file:
 	make show-crash APP=TestApp FILE=TestApp-crash-report-file
 
 This command requires node.js to be installed and `node` available in the current path.
+
+# Deploy on Linux
+
+The simplest deployment on Linux could be as the following:
+
+- setup Linux instance, for example Amazon AMI
+- copy atosl.Linux to your instance home of the user `ec2-user` in `~/bin/atosl`
+- copy atosl.js to your instance home of the user `ec2-user` in `~/bin/atosl.js`
+- create the config file /home/ec2-uyser/.atoslrc as: 
+
+	bin=atosl
+	app=/home/ec2-user/bin/appName
+
+  where `appName` is the base name of your iOS app
+
+- on your development Mac create the Makefile as described above and build your app
+
+- assuming somehow the crash reports end up on that Linux server in the ~/crash directory
+
+- to see the symbolicated backtrace for a crash report run the command:
+
+	atosl.js ~/crash/TestApp-12235.crash
+
 
 Authors
 
