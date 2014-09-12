@@ -16,12 +16,12 @@ clean-app:
 build-app: clean-app
 	mkdir -p $(DEST_DIR)
 	/usr/bin/xcodebuild -target $(APP) -configuration $(CONFIG)
-	/usr/bin/xcrun --sdk $(SDK) PackageApplication "$(BUILD_DIR)" -o "$(DEST_DIR)/$(APP).ipa" --sign "$(DEVELOPER)" --embed "$(PROFILE_DIR)/$(PROFILE_NAME).mobileprovision"
+	/usr/bin/xcrun --sdk $(SDK) PackageApplication "$(BUILD_DIR)" -o "$(DEST_DIR)/$(APP)$(VERSION).ipa" --sign "$(DEVELOPER)" --embed "$(PROFILE_DIR)/$(PROFILE_NAME).mobileprovision"
 
 build-sim:
 	mkdir -p $(DEST_DIR)
 	/usr/bin/xcodebuild -arch i386 -sdk $(shell xcodebuild -showsdks|awk 'BEGIN {l=""} /simulator/ {l=$NF} END {print l}')
-	cd build/Release-iphonesimulator && zip -r $(DEST_DIR)/$(APP).zip $(APP).app
+	cd build/Release-iphonesimulator && zip -r $(DEST_DIR)/$(APP)$(VERSION).zip $(APP).app
 
 build-crash:
 	mkdir -p $(DEST_DIR)
