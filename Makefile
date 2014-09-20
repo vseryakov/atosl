@@ -1,6 +1,6 @@
 BUILD_DIR=build/$(CONFIG)-iphoneos/$(APP).app
 PROFILE_DIR=$(HOME)/Library/MobileDevice/Provisioning Profiles
-PROFILE_NAME=$(shell xcodebuild -showBuildSettings|grep 'PROVISIONING_PROFILE ='|awk '{print $$3}')
+PROFILE_NAME=$(shell xcodebuild -showBuildSettings|grep 'PROVISIONING_PROFILE ='|awk -F'= ' '{print $$2}')
 DEVELOPER=$(shell xcodebuild -showBuildSettings|grep 'CODE_SIGN_IDENTITY ='|awk -F'= ' '{print $$2}')
 SDK=$(shell xcodebuild -showBuildSettings|grep 'SDK_NAME ='|awk -F'= ' '{print $$2}')
 VERSION=$(shell /usr/libexec/PlistBuddy -c "print :CFBundleVersion" $(APP)/$(APP)-Info.plist)
