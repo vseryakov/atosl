@@ -5,8 +5,8 @@ DEVELOPER=$(shell xcodebuild -showBuildSettings|grep ' CODE_SIGN_IDENTITY ='|awk
 SDK=$(shell xcodebuild -showBuildSettings|grep ' SDK_NAME ='|awk -F'= ' '{print $$2}')
 VERSION=$(shell /usr/libexec/PlistBuddy -c "print :CFBundleVersion" $(APP)/$(APP)-Info.plist)
 DEST_DIR=$(HOME)/Downloads/$(VERSION)
+DWARF_FILE=$(DEST_DIR)/$(APP).app.dSYM/Contents/Resources/DWARF/$(APP)
 CONFIG=Release
-ARCHS=armv7 armv7s
 ATOSL_DIR=$(dir $(lastword $(MAKEFILE_LIST)))
 
 clean-app:
@@ -23,10 +23,14 @@ build-sim:
 	/usr/bin/xcodebuild -arch i386 -sdk $(shell xcodebuild -showsdks|awk 'BEGIN {l=""} /simulator/ {l=$NF} END {print l}')
 	cd build/Release-iphonesimulator && zip -r $(DEST_DIR)/$(APP)$(VERSION).zip $(APP).app
 
-build-crash:
+build-crash: copy-dsym split-dsym
+
+copy-dsym:
 	mkdir -p $(DEST_DIR)
 	cp -r "$(BUILD_DIR).dSYM" $(DEST_DIR)
-	for a in $(ARCHS); do lipo -thin $$a $(BUILD_DIR).dSYM/Contents/Resources/DWARF/$(APP) -output $(DEST_DIR)/$(APP)$(VERSION).$$a; done
+
+split-dsym:
+	for a in $(shell lipo -detailed_info $(DWARF_FILE)|grep 'architecture '|awk '{print $$2}'); do lipo -thin $$a $(DWARF_FILE) -output $(DEST_DIR)/$(APP)$(VERSION).$$a; done
 
 show-crash:
 	$(ATOSL_DIR)atosl.js -bin $(ATOSL_DIR)atosl.$(shell uname -s) -app $(DEST_DIR)/$(APP) $(FILE)
