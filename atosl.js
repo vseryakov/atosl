@@ -8,11 +8,12 @@ var stack = 0;
 var backtrace = [];
 var thread = [];
 var cmds = [];
-var file = process.argv[process.argv.length - 1];
+var logfile = process.argv[process.argv.length - 1];
 var bin = "atosl";
 var app = "app";
 var arch = "armv7";
 var version = null;
+var appfile = null;
 
 var argv = [];
 for (var i in process.argv) argv.push(process.argv[i]);
@@ -26,10 +27,11 @@ try {
 for (var i = 1; i < argv.length - 1; i++) {
     if (argv[i] == "-bin") bin = argv[i + 1]; 
     if (argv[i] == "-app") app = argv[i + 1]; 
+    if (argv[i] == "-file") appfile = argv[i + 1]; 
     if (argv[i] == "-ver") version = argv[i + 1]; 
 }
 
-fs.readFile(file, function(err, data) {
+fs.readFile(logfile, function(err, data) {
     if (err) return console.log("ERROR:", err);
     
     data = String(data).split("\n");
@@ -58,7 +60,7 @@ fs.readFile(file, function(err, data) {
         if (line[0] == "***") console.log(data[i]);
     }
     
-    var dsym = app + (version ? version : "") + "." + arch;
+    var dsym = appfile || (app + (version ? version : "") + "." + arch);
     fs.exists(dsym, function(yes) {
 	if (!yes) return console.log("cannot find " + dsym);
 
